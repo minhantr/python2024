@@ -1,75 +1,68 @@
 def student_num():
-    return int(input("Input number of students in a class:"))
+    return int(input("Enter the number of students:"))
 
 def student_info():
-    student_id=input("Input student ID:")
-    student_name=input("Input student name:")
-    student_dob=input("Input student DoB:")
-    return {"id":student_id,"name":student_name,"dob":student_dob}
+    student_id=input("Enter the id of the student:")
+    student_name=input("Enter the name of the student:")
+    student_DoB=input("Enter the Dob of the student:")
+    return {'id':student_id,'name':student_name,'Dob':student_DoB}
 
 def course_num():
-    return int(input("Input number of courses:"))
+    return int(input("Enter the number of the courses:"))
 
 def course_info():
-    course_id=input("Input the course id:")
-    course_name=input("Input the course name:")
-    return {"id":course_id,"name":course_name}
+    course_id=input("Enter the id of the course:")
+    course_name=input("Enter the name of the course:")
+    return {'id':course_id,'name':course_name}
 
-def input_marks(courses, students, marks, course_id):
-    if course_id not in courses:
-        print("Error!!!!")
-        return
-    
+def input_marks(course_id,students):
+    marks={}
+    print("Enter marks for course",course_id)
     for student in students:
-        mark=float(input("Input marks for {students['name']} in {course[course_id]['name']}"))
-        marks.append({"student_id": student['id'], "course_id": course_id, "mark": mark})
+        mark=int(input(f"Enter the mark for {student['name']}:"))
+        marks[student['id']]=mark
+    return marks
 
-def lists_course(courses):
-    print("Course lists:")
-    for course in course.values():
-        print("{course['id']}:{course['name']}")
-
-def lists_students(students):
-    print("Student lists:")
-    for student in students:
-        print("{student['id']}:{student['name']}")
-
-def show_students_marks(marks,courses,students,course_id):
-    if course_id not in courses:
-        print("Error!!!")
-        return
+def list_courses(courses):
+    print("List of courses:")
+    for course in courses:
+        print(f"ID:{course['id']}, Name:{course['name']}")
     
-    print("Student marks for {course[course_id]['name']}")
-    for mark in marks:
-        if mark["course_id"]==course_id:
-            student_name = next(student["name"] for student in students if student["id"] == mark["student_id"])
-            print("{student_name}:{mark['mark']}")
+def list_students(students):
+    print("List of students:")
+    for student in students:
+        print(f"ID:{student['id']}, Name:{student['name']}, Dob:{student['Dob']}")
 
+def student_marks(course_id,marks_res,students):
+    print(f"Marks for course {course_id}:")
+    for student_id, mark in marks_res.items():
+        student_name = next(student['name'] for student in students if student['id'] == student_id)
+        print(f"Student: {student_name}, Mark: {mark}")
+    
 def main():
-    students= []
-    courses={}
-    marks=[]
+    students=[]
+    courses=[]
+    marks={}
+    
+    num_student=student_num()
+    for _ in range(num_student):
+        s_info=student_info()
+        students.append(s_info)
+    
+    num_course=course_num()
+    for _ in range(num_course):
+        c_info=course_info()
+        courses.append(c_info)
+        
+    for course in courses:
+        course_id=course['id']
+        marks[course_id]=input_marks(course_id,students)
 
-    num_students = student_num()
-    for _ in range(num_students):
-        student = student_info()
-        students.append(student)
+    list_courses(courses)
+    list_students(students)
+    
+    for course_id, mark in marks.items():
+        student_marks(course_id,mark,students)
 
-    num_courses = course_num()
-    for _ in range(num_courses):
-        course = course_info()
-        courses[course["id"]] = course
-
-    lists_course(courses)
-    lists_students(students)
-
-    course_id = input("Enter the course ID to input marks: ")
-    input_marks(courses, students, marks, course_id)
-
-    lists_course(courses)
-    lists_students(students)
-
-    show_students_marks(marks, courses, students, course_id)
-
-if __name__ == "__main__":
-    main()
+if __name__=="__main__":
+    main()    
